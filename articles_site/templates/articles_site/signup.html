@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <link rel="stylesheet" href="{% static 'articles_site/styles.css' %}">
+</head>
+<body>
+<div class="container">
+    <h1>Signup</h1>
+    <form id="signup-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <label for="password2">Repeat Password:</label>
+        <input type="password" id="password2" name="password2" required>
+        <button type="submit">Signup</button>
+    </form>
+    <div id="error-box" style="color: red; display: none;"></div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('signup-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const password2 = document.getElementById('password2').value;
+            const errorBox = document.getElementById('error-box');
+
+            fetch("{% url 'signup_api' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // Assuming CSRF token is needed
+                },
+                body: JSON.stringify({username, email, password, password2 })
+            })
+                .then(response => {
+                    if (response.status === 201) {
+                        window.location.href = "{% url 'landing' %}";
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data) {
+                        errorBox.style.display = 'block';
+                        errorBox.innerText = JSON.stringify(data);
+                    }
+                })
+                .catch(error => {
+                    errorBox.style.display = 'block';
+                    errorBox.innerText = 'An unexpected error occurred.';
+                });
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+</script>
+</body>
+</html>
