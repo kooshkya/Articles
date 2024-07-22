@@ -42,6 +42,3 @@ class SignupView(APIView):
             return Response({"message": "User created successfully."}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-def test_view(request):
-    return HttpResponse("This is a test view")
