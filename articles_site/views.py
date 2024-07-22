@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 
 from . import serializers
 from .models import Article
+from .pagination import MyPagination
 
 
 def signup_view(request):
@@ -20,9 +21,10 @@ def login_view(request):
 
 class ArticleListCreateAPI(generics.ListCreateAPIView):
     serializer_class = serializers.ArticleSerializer
-    queryset = Article.objects
+    queryset = Article.objects.all()
 
     permission_classes = [IsAuthenticated]
+    pagination_class = MyPagination
 
     def create(self, request, *args, **kwargs):
         request.data.update({"author": request.user.id})
