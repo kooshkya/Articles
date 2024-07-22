@@ -9,4 +9,5 @@ urlpatterns = [
     path('api/login/', views.LoginView.as_view(), name='login_api'),
     path('api/logout/', views.LogoutView.as_view(), name='logout_api'),
     path('api/articles/', views.ArticleListCreateAPI.as_view(), name='articles_list'),
+    path('api/articles/<int:pk>/', views.ArticleRetrieveAPI.as_view(), name='articles_detail'),
 ]

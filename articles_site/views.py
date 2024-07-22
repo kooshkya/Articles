@@ -31,6 +31,13 @@ class ArticleListCreateAPI(generics.ListCreateAPIView):
         return super().create(request, *args, **kwargs)
 
 
+class ArticleRetrieveAPI(generics.RetrieveAPIView):
+    serializer_class = serializers.ArticleSerializer
+    queryset = Article.objects.all()
+
+    permission_classes = [IsAuthenticated]
+
+
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = serializers.LoginSerializer(data=request.data)
