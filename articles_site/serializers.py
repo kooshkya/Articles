@@ -5,6 +5,14 @@ from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import authenticate
 
+from articles_site import models
+
+
+class ArticleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Article
+        fields = ('id', 'title', 'content', 'author')
+
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
