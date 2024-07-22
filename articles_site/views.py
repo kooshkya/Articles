@@ -18,11 +18,15 @@ def login_view(request):
     return render(request, "articles_site/login.html")
 
 
-class ArticleListAPI(generics.ListAPIView):
+class ArticleListCreateAPI(generics.ListCreateAPIView):
     serializer_class = serializers.ArticleSerializer
     queryset = Article.objects
 
     permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        request.data.update({"author": request.user.id})
+        return super().create(request, *args, **kwargs)
 
 
 class LoginView(APIView):

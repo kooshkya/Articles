@@ -9,9 +9,21 @@ from articles_site import models
 
 
 class ArticleSerializer(serializers.ModelSerializer):
+    author_username = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = models.Article
-        fields = ('id', 'title', 'content', 'author')
+        fields = ('id', 'title', 'content', 'author', 'author_username')
+        read_only_fields = ('id', 'author_username')
+        write_only_fields = ('author',)
+
+    def get_author_username(self, obj):
+        return obj.author.username
+
+    def to_representation(self, instance):
+        result = super().to_representation(instance)
+        result.pop("author", None)
+        return result
 
 
 class LoginSerializer(serializers.Serializer):
