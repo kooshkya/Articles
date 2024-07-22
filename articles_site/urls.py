@@ -10,4 +10,5 @@ urlpatterns = [
     path('api/logout/', views.LogoutView.as_view(), name='logout_api'),
     path('api/articles/', views.ArticleListCreateAPI.as_view(), name='articles_list'),
     path('api/articles/<int:pk>/', views.ArticleRetrieveAPI.as_view(), name='articles_detail'),
+    path('api/ratings/', views.RatingCreateUpdateView.as_view(), name='rating_api'),
 ]

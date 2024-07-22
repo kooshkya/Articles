@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from . import serializers
+from . import serializers, models
 from .models import Article
 from .pagination import MyPagination
 
@@ -17,6 +17,36 @@ def signup_view(request):
 
 def login_view(request):
     return render(request, "articles_site/login.html")
+
+
+class RatingCreateUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.RatingSerializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+            article_id = serializer.validated_data['article_id']
+            rating_value = serializer.validated_data['rating']
+
+            try:
+                article = Article.objects.get(id=article_id)
+            except Article.DoesNotExist:
+                return Response({"detail": "Article not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            rating, created = models.Rating.objects.update_or_create(
+                user=user,
+                article=article,
+                defaults={'rating': rating_value}
+            )
+
+            return Response({
+                'article_id': rating.article.id,
+                'rating': rating.rating,
+                'created': created
+            }, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ArticleListCreateAPI(generics.ListCreateAPIView):
