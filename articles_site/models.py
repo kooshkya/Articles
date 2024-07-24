@@ -6,6 +6,8 @@ class Article(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    average_rating = models.FloatField(default=0)
+    rates_count = models.IntegerField(default=0)
     ratings = models.ManyToManyField(get_user_model(), through='Rating', related_name='rated_articles')
 
 
