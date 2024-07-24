@@ -48,13 +48,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.status === 200 || response.status === 201) {
                     return response.json();
                 } else {
-                    throw new Error('Failed to submit rating.');
+                    return response.text().then(text => {
+                        throw new Error(`Failed to submit rating. Response: ${text}`);
+                    });
                 }
             })
             .then(data => {
                 alert('Rating submitted successfully.');
                 window.location.reload();
-                displayError("An error occurred: " + JSON.stringify(data));
             })
             .catch(error => {
                 displayError('An error occurred while submitting the rating: ' + error.message);
