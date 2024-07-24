@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework import status
@@ -6,11 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from . import serializers, models
+from . import serializers
 from .models import Article, Rating
 from .pagination import MyPagination
-
-from django.contrib.auth.decorators import login_required
 
 
 @login_required
@@ -47,14 +46,14 @@ class RatingAPI(APIView):
             if qs.exists():
                 rating = qs.first()
                 article.average_rating = (
-                                                     article.average_rating * article.rates_count - rating.rating + rating_value) / article.rates_count
+                                                 article.average_rating * article.rates_count - rating.rating + rating_value) / article.rates_count
                 rating.rating = rating_value
                 rating.save()
                 created = False
             else:
                 rating = Rating.objects.create(article=article, user=user, rating=rating_value)
                 article.average_rating = (article.average_rating * article.rates_count + rating_value) / (
-                            article.rates_count + 1)
+                        article.rates_count + 1)
                 article.rates_count += 1
                 created = True
             article.save()
