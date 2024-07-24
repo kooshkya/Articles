@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import serializers, models
-from .models import Article
+from .models import Article, Rating
 from .pagination import MyPagination
 
 from django.contrib.auth.decorators import login_required
@@ -38,7 +38,7 @@ class RatingCreateUpdateView(APIView):
         serializer = serializers.RatingSerializer(data=request.data)
         if serializer.is_valid():
             user = request.user
-            article_id = serializer.validated_data['article_id']
+            article_id = serializer.validated_data['article'].id
             rating_value = serializer.validated_data['rating']
 
             try:
@@ -59,6 +59,20 @@ class RatingCreateUpdateView(APIView):
             }, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetUserRatingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        article_id = request.query_params.get('article_id')
+        if not article_id:
+            return Response("You need to specify the article_id in URL kwargs", status=status.HTTP_400_BAD_REQUEST)
+        qs = Rating.objects.filter(user=request.user, article_id=article_id)
+        if qs.exists():
+            serializer = serializers.RatingSerializer(qs.first())
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response("You haven't rated this article", status=status.HTTP_404_NOT_FOUND)
 
 
 class ArticleListCreateAPI(generics.ListCreateAPIView):

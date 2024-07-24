@@ -25,9 +25,11 @@ class ArticleSerializer(serializers.ModelSerializer):
         return result
 
 
-class RatingSerializer(serializers.Serializer):
-    article_id = serializers.IntegerField()
-    rating = serializers.IntegerField(min_value=0, max_value=5)
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Rating
+        fields = ('id', 'article', 'user', 'rating')
+        read_only_fields = ('id', 'user')
 
 
 class LoginSerializer(serializers.Serializer):

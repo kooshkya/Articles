@@ -13,4 +13,5 @@ urlpatterns = [
     path('api/articles/', views.ArticleListCreateAPI.as_view(), name='articles_list_api'),
     path('api/articles/<int:pk>/', views.ArticleRetrieveAPI.as_view(), name='articles_detail_api'),
     path('api/ratings/', views.RatingCreateUpdateView.as_view(), name='rating_api'),
+    path('api/get_rating/', views.GetUserRatingView.as_view(), name='get_rating_api'),
 ]
