@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, Rating
+from .models import Article, Rating, ArticlesUser
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -8,6 +8,12 @@ User = get_user_model()
 class RatingInline(admin.TabularInline):
     model = Rating
     extra = 1
+
+
+@admin.register(ArticlesUser)
+class ArticlesUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'email', 'created_at')
+    search_fields = ('username', 'email')
 
 
 @admin.register(Article)
@@ -24,4 +30,3 @@ class RatingAdmin(admin.ModelAdmin):
     list_filter = ('rating', 'user', 'article')
     search_fields = ('user__username', 'article__title')
     autocomplete_fields = ['user', 'article']
-
