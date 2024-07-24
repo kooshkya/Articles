@@ -11,6 +11,7 @@ from . import serializers
 from .models import Article, Rating
 from .pagination import MyPagination
 from .permissions import IsAuthenticatedAndRegisteredOver10Days
+from .throttles import DailyUserRatingThrottle
 
 
 @login_required
@@ -33,6 +34,7 @@ def login_view(request):
 
 class RatingAPI(APIView):
     permission_classes = [IsAuthenticated, IsAuthenticatedAndRegisteredOver10Days]
+    throttle_classes = [DailyUserRatingThrottle]
 
     def post(self, request, *args, **kwargs):
         serializer = serializers.RatingSerializer(data=request.data)
