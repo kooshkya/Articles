@@ -13,9 +13,8 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Article
-        fields = ('id', 'title', 'content', 'author', 'author_username')
-        read_only_fields = ('id', 'author_username')
-        write_only_fields = ('author',)
+        fields = ('id', 'title', 'content', 'author', 'author_username', 'average_rating', 'rates_count')
+        read_only_fields = ('id', 'author_username', 'average_rating', 'rates_count')
 
     def get_author_username(self, obj):
         return obj.author.username
