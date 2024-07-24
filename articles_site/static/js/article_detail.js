@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (response.status === 200) {
                         return response.json();
                     } else if (response.status === 404) {
-                        // User hasn't rated the article
                         document.getElementById('rating').value = '';
                     } else {
                         throw new Error('Error fetching user rating.');
@@ -24,6 +23,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (ratingData) {
                         document.getElementById('rating').value = ratingData.rating;
                     }
+
+                    // Enable or disable the submit button after fetching is complete
+                    const ratingForm = document.getElementById('rating-form');
+                    const submitButton = ratingForm.querySelector('button[type="submit"]');
+
+                    if (document.getElementById('rating').value === "") {
+                        submitButton.disabled = true;
+                    }
+
+                    setTimeout(() => {
+                        submitButton.disabled = false;
+                    }, 30000);  // 30 seconds delay
                 })
                 .catch(error => {
                     displayError('Error fetching user rating: ' + error.message);
@@ -34,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
     const ratingForm = document.getElementById('rating-form');
+
     ratingForm.addEventListener('submit', function (event) {
         event.preventDefault();
         const formData = new FormData(ratingForm);
