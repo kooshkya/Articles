@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Articles Site{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{% url 'articles_list' %}">Home</a>
+            <form id="logout-form" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit">Sign out</button>
+            </form>
+        </nav>
+    </header>
+    <main>
+        <div id="error-box" class="hidden"></div>
+        {% block content %}{% endblock %}
+    </main>
+    <script>
+        document.getElementById('logout-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('{% url "logout_api" %}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '{% url "login" %}';
+                } else {
+                    return response.json().then(data => {
+                        throw new Error(data.detail || 'An error occurred during signout.');
+                    });
+                }
+            })
+            .catch(error => {
+                displayError(error.message);
+            });
+        });
+
+        function displayError(message) {
+            const errorBox = document.getElementById('error-box');
+            errorBox.innerText = message;
+            errorBox.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
