@@ -31,26 +31,33 @@ def login_view(request):
     return render(request, "articles_site/login.html")
 
 
-class RatingCreateUpdateView(APIView):
+class RatingAPI(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         serializer = serializers.RatingSerializer(data=request.data)
         if serializer.is_valid():
             user = request.user
-            article_id = serializer.validated_data['article'].id
             rating_value = serializer.validated_data['rating']
+            article = serializer.validated_data['article']
 
-            try:
-                article = Article.objects.get(id=article_id)
-            except Article.DoesNotExist:
-                return Response({"detail": "Article not found."}, status=status.HTTP_404_NOT_FOUND)
-
-            rating, created = models.Rating.objects.update_or_create(
-                user=user,
-                article=article,
-                defaults={'rating': rating_value}
-            )
+            qs = Rating.objects.filter(user=user, article=article)
+            created = False
+            rating = None
+            if qs.exists():
+                rating = qs.first()
+                article.average_rating = (
+                                                     article.average_rating * article.rates_count - rating.rating + rating_value) / article.rates_count
+                rating.rating = rating_value
+                rating.save()
+                created = False
+            else:
+                rating = Rating.objects.create(article=article, user=user, rating=rating_value)
+                article.average_rating = (article.average_rating * article.rates_count + rating_value) / (
+                            article.rates_count + 1)
+                article.rates_count += 1
+                created = True
+            article.save()
 
             return Response({
                 'article_id': rating.article.id,
