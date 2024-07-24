@@ -10,6 +10,18 @@ from . import serializers, models
 from .models import Article
 from .pagination import MyPagination
 
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def landing_view(request):
+    return render(request, 'articles_site/landing.html')
+
+
+@login_required
+def article_detail_view(request, pk):
+    return render(request, 'articles_site/article_detail.html', {'article_id': pk})
+
 
 def signup_view(request):
     return render(request, "articles_site/signup.html")

@@ -1,0 +1,29 @@
+{% extends 'articles_site/base.html' %}
+
+{% block title %}Article Detail{% endblock %}
+
+{% block content %}
+<div class="center">
+    <h1 id="article-title"></h1>
+    <hr>
+    <p id="article-content"></p>
+    <hr>
+    <p id="article-rating"></p>
+    <hr>
+    <form id="rating-form">
+        {% csrf_token %}
+        <label for="rating">Rate this article:</label>
+        <select id="rating" name="rating">
+            {% for i in "012345"|make_list %}
+            <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" id="article-id" name="article_id" value="{{ article_id }}">
+        <button type="submit">Submit</button>
+    </form>
+    <hr>
+    <a href="{% url 'landing' %}">Back to Articles</a>
+</div>
+    {% load static %}
+<script src="{% static 'js/article_detail.js' %}"></script>
+{% endblock %}

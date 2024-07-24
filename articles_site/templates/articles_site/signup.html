@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
-    <link rel="stylesheet" href="{% static 'articles_site/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
 <div class="container">
@@ -21,6 +21,7 @@
         <input type="password" id="password2" name="password2" required>
         <button type="submit">Signup</button>
     </form>
+    <a href="{% url 'login' %}">Login</a>
     <div id="error-box" style="color: red; display: none;"></div>
 </div>
 <script>

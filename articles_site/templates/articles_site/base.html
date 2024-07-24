@@ -9,7 +9,7 @@
 <body>
     <header>
         <nav>
-            <a href="{% url 'articles_list' %}">Home</a>
+            <a href="{% url 'landing' %}">Home</a>
             <form id="logout-form" method="post" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Sign out</button>

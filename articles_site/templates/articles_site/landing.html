@@ -1,0 +1,12 @@
+{% extends 'articles_site/base.html' %}
+
+{% block title %}All Articles{% endblock %}
+
+{% block content %}
+    {% load static %}
+<div class="center">
+    <h1>All Articles</h1>
+    <ul id="articles-list"></ul>
+</div>
+<script src="{% static 'js/landing.js' %}"></script>
+{% endblock %}
